@@ -1,11 +1,14 @@
-FROM node:slim
+FROM node:18-slim AS builder
 
 WORKDIR /app
 
-COPY . /app
+COPY package*.json ./
 
-RUN npm install
+# Install dependencies (this will be cached unless package.json changes)
+RUN npm install --production
+
+COPY . .
 
 EXPOSE 3000
 
-CMD node index.js
+CMD ["node", "index.js"]
