@@ -8,11 +8,11 @@ const app = express();
 const port = 3000;
 
 const db = new pg.Client({
-  user: "postgres",
-  host: "process.env.DB_HOST",
-  database: "process.env.DB_NAME",
-  password: "process.env.DB_PASS",
-  port: 5432,
+  user: "postgres",               
+  host: process.env.DB_HOST,           
+  database: process.env.DB_NAME,           
+  password: process.env.DB_PASS,
+  port: 5432,             
   ssl: {
     rejectUnauthorized: false,
   },
