@@ -1,0 +1,53 @@
+name: Build and Deploy Docker Image to EC2
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    # Set up Docker
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Build the Docker image
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
+
+    # Push the Docker image to Docker Hub
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_IMAGE_NAME }}
+
+    # SSH into EC2 and pull the new image
+    - name: SSH into EC2 and update Docker container
+      uses: appleboy/ssh-action@v0.1.1
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user  # You may need to adjust this depending on your EC2 user
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          # Pull the latest Docker image
+          docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+
+          # Stop the existing container (if running)
+          docker stop my_container || true
+          docker rm my_container || true
+
+          # Run the new Docker container
+          docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}

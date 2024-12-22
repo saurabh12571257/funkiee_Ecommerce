@@ -18,7 +18,14 @@ const db = new pg.Client({
   },
 });
 
-db.connect();
+db.connect()
+  .then(() => {
+    console.log('Connected to the database');
+    // Start your server or run other queries here
+  })
+  .catch(err => {
+    console.error('Database connection error', err);
+  });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
