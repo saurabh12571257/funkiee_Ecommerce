@@ -34,8 +34,8 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
-        - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Add SSH key to ssh-agent
       run: |
