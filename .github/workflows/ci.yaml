@@ -35,7 +35,7 @@ jobs:
         docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
     - name: SSH into EC2 and update Docker container
-      uses: appleboy/ssh-action@main
+      uses: appleboy/ssh-action@v0.1.1
       with:
         debug: true
         host: ${{ secrets.EC2_HOST }}
