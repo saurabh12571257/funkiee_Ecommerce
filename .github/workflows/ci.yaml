@@ -34,21 +34,16 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-public-key: ${{ secrets.EC2_SSH_PUBLIC_KEY }}
-    
     - name: SSH into EC2 and update Docker container
       uses: appleboy/ssh-action@v0.1.1
       with:
-          debug: true  # Enable debug mode for more detailed SSH logs
-          host: ${{ secrets.EC2_HOST }}  # EC2 host IP or DNS
-          username: ubuntu  # EC2 instance username
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}  # Use the private key from GitHub Secrets
-          script: |
-            docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
-            docker stop my_container || true
-            docker rm my_container || true
-            docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
+        debug: true
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+          docker stop my_container || true
+          docker rm my_container || true
+          docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
       
