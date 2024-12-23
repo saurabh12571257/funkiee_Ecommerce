@@ -34,6 +34,16 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
+        - name: Checkout code
+        uses: actions/checkout@v2
+
+    - name: Add SSH key to ssh-agent
+      run: |
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
     # SSH into EC2 and pull the new image
     - name: SSH into EC2 and update Docker container
       uses: appleboy/ssh-action@v0.1.1
