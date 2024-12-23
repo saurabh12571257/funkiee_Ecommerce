@@ -43,7 +43,6 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
-          docker stop c45805717af3 || true
-          docker rm c45805717af3 || true
-          docker run -d --name c45805717af3 -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
-      
+          docker stop nodecontainer || true
+          docker rm nodecontainer || true
+          docker run -d --name nodecontainer -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
