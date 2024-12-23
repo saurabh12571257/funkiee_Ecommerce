@@ -35,12 +35,12 @@ jobs:
         docker push ${{ secrets.DOCKER_IMAGE_NAME }}
 
     - name: SSH into EC2 and update Docker container
-      uses: appleboy/ssh-action@v0.1.1
+      uses: omarhosny206/setup-ssh-for-ec2@v1.0.0
       with:
         debug: true
         host: ${{ secrets.EC2_HOST }}
         username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
           docker stop my_container || true
