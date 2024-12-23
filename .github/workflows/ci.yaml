@@ -38,16 +38,17 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-      
+    
     - name: SSH into EC2 and update Docker container
-      run: |
-          ssh -o StrictHostKeyChecking=no -i /tmp/private_key ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            echo "SSH successful. Updating Docker container..."
-
-            docker pull your-image:latest
-            docker stop container_name
-            docker rm container_name
-            docker run -d --name container_name your-image:latest
-            echo "Docker container updated successfully!"
-          EOF
-         
+      uses: appleboy/ssh-action@v0.1.1
+      with:
+          debug: true  # Enable debug mode for more detailed SSH logs
+          host: ${{ secrets.EC2_HOST }}  # EC2 host IP or DNS
+          username: ubuntu  # EC2 instance username
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}  # Use the private key from GitHub Secrets
+          script: |
+            docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+            docker stop my_container || true
+            docker rm my_container || true
+            docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
+      
