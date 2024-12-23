@@ -45,5 +45,4 @@ jobs:
           docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
           docker stop nodecontainer || true
           docker rm nodecontainer || true
-          docker run -d --name nodecontainer -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
-          
+          docker run -d --name nodecontainer -p 3000:3000 --env-file /home/ubuntu/.env ${{ secrets.DOCKER_IMAGE_NAME }}
