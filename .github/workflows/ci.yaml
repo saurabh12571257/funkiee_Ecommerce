@@ -38,19 +38,13 @@ jobs:
     - name: SSH into EC2 and update Docker container
       uses: appleboy/ssh-action@v0.1.1
       with:
-        host: 13.232.220.82
-        username: ubuntu  # You may need to adjust this depending on your EC2 user
+        debug: true  # Enable debug mode for more detailed SSH logs
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          export SSH_OPTIONS="-o StrictHostKeyChecking=no"
-          ssh $SSH_OPTIONS ubuntu@${{ secrets.EC2_HOST }} <<EOF
-            # Pull the latest Docker image
-            docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
-
-            # Stop the existing container (if running)
-            docker stop my_container || true
-            docker rm my_container || true
-
-            # Run the new Docker container
-            docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
-          EOF
+          docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
+          docker stop my_container || true
+          docker rm my_container || true
+          docker run -d --name my_container -p 3000:3000 ${{ secrets.DOCKER_IMAGE_NAME }}
+          EOF      
