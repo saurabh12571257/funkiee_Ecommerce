@@ -38,7 +38,7 @@ jobs:
     - name: SSH into EC2 and update Docker container
       uses: appleboy/ssh-action@v0.1.1
       with:
-        host: ${{ secrets.EC2_HOST }}
+        host: 13.232.220.82
         username: ubuntu  # You may need to adjust this depending on your EC2 user
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
