@@ -44,33 +44,7 @@ jobs:
         debug: true  # Enable debug mode for more detailed SSH logs
         host: 13.232.220.82
         username: ubuntu
-        key: -----BEGIN OPENSSH PRIVATE KEY-----
-            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
-            -----END OPENSSH PRIVATE KEY-----
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
           docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
           docker stop my_container || true
