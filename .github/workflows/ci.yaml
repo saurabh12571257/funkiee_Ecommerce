@@ -44,7 +44,7 @@ jobs:
         debug: true  # Enable debug mode for more detailed SSH logs
         host: 13.232.220.82
         username: ubuntu
-        key: "-----BEGIN OPENSSH PRIVATE KEY-----
+        key: -----BEGIN OPENSSH PRIVATE KEY-----
             b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABFwAAAAdzc2gtcn
             NhAAAAAwEAAQAAAQEA7dOSV2aPiBNzC1MXXuWe6Nn9EHxTz5mw4ALT3o+Jlu0i+f9B0qJP
             l9XSu3dTGn90bJFos5CLfUXsi0quadJFpLdLlUXssYWLIj+TKBRh60kfap9ILl4GkqBlAT
@@ -70,7 +70,7 @@ jobs:
             /l2xDS0R/qW7CSMy2+mMbzJXotIpfuJEPTlhPyfslPzTFvVksYMa8pmczbIsSN2fmMfaNv
             +F7O5sD520q8tsv9UoHe/KSf4EKbDdzOnE4FPbBXCz0EyyW57UUJJa/LSnwskd0O8HRNQ0
             FVI+SNgb99V49q1A/wAAABdkYXZlc2F1cmFiaDU5QGdtYWlsLmNvbQEC
-            -----END OPENSSH PRIVATE KEY-----"
+            -----END OPENSSH PRIVATE KEY-----
         script: |
           docker pull ${{ secrets.DOCKER_IMAGE_NAME }}
           docker stop my_container || true
