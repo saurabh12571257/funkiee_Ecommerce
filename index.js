@@ -46,11 +46,11 @@ db.connect()
   
   //INSERT new country
   app.post("/add", async (req, res) => {
-    const input = req.form["country"];
+    const input = req.body["country"];
   
     try {
       const result = await db.query(
-        "SELECT country_code FROM countries WHERE LOWER(country_name) LIKE '$1';",
+        "SELECT country_code FROM countries WHERE to_tsvector(country_name) @@ to_tsquery('$1');",
         [input.toLowerCase()]
       );
   
