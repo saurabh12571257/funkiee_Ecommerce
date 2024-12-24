@@ -1,0 +1,106 @@
+body {
+  background-color: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-container {
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 1px;
+  padding: 40px;
+  max-width: 350px;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.logo {
+  font-family: 'Grand Hotel', cursive;
+  font-size: 42px;
+  margin-bottom: 30px;
+  color: #262626;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+input {
+  background-color: #fafafa;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  padding: 9px 8px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #0095f6;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 0;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0081d6;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #8e8e8e;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.divider span {
+  margin: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #8e8e8e;
+}
+
+.switch-auth {
+  background-color: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 1px;
+  padding: 20px;
+  text-align: center;
+}
+
+.switch-auth p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.switch-auth a {
+  color: #0095f6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.error-message {
+  color: #ed4956;
+  font-size: 14px;
+  margin: 10px 0;
+} 
