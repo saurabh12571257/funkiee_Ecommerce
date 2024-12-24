@@ -50,7 +50,7 @@ db.connect()
   
     try {
       const result = await db.query(
-        "SELECT country_code FROM countries WHERE to_tsvector(country_name) @@ to_tsquery('$1');",
+        "SELECT country_code FROM countries WHERE to_tsvector(country_name) @@ to_tsquery($1);",
         [input.toLowerCase()]
       );
   
