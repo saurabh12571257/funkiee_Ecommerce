@@ -37,6 +37,7 @@ async function checkVisited() {
 }
 
 
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -71,7 +72,7 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
       [name, email, hashedPassword, color]
     );
-    res.redirect("/login");
+    res.render("login.ejs");
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).send("Server error.");
