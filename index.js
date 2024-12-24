@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import dotenv from 'dotenv';
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 const app = express();
@@ -23,41 +24,83 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let currentUserId = 1;
+let currentUserId = null;
 
-let users = [
-  { id: 1, name: "Angela", color: "teal" },
-  { id: 2, name: "Jack", color: "powderblue" },
-];
 
-async function checkVisisted() {
+async function checkVisited() {
+  if (!currentUserId) return [];
   const result = await db.query(
-    "SELECT country_code FROM visited_countries JOIN users ON users.id = user_id WHERE user_id = $1; ",
+    "SELECT country_code FROM visited_countries JOIN users ON users.id = user_id WHERE user_id = $1;",
     [currentUserId]
   );
-  let countries = [];
-  result.rows.forEach((country) => {
-    countries.push(country.country_code);
-  });
-  return countries;
+  return result.rows.map((row) => row.country_code);
 }
 
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await db.query("SELECT * FROM users WHERE email = $1;", [
+      email,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.render("login.ejs", { error: "Invalid email or password." });
+    }
+
+    const user = result.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.render("login.ejs", { error: "Invalid email or password." });
+    }
+
+    currentUserId = user.id;
+    res.redirect("/");
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).send("Server error.");
+  }
+});
+
+app.post("/register", async (req, res) => {
+  const { name, email, password, color } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.query(
+      "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
+      [name, email, hashedPassword, color]
+    );
+    res.redirect("/login");
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).send("Server error.");
+  }
+});
+
 async function getCurrentUser() {
-  const result = await db.query("SELECT * FROM users");
-  users = result.rows;
-  return users.find((user) => user.id == currentUserId);
+  if (!currentUserId) return null;
+  const result = await db.query("SELECT * FROM users WHERE id = $1;", [
+    currentUserId,
+  ]);
+  return result.rows[0];
 }
 
 app.get("/", async (req, res) => {
-  const countries = await checkVisisted();
+  if (!currentUserId) {
+    return res.redirect("/login");
+  }
+  const countries = await checkVisited();
   const currentUser = await getCurrentUser();
   res.render("index.ejs", {
     countries: countries,
     total: countries.length,
-    users: users,
-    color: currentUser.color,
+    users: [],
+    color: currentUser ? currentUser.color : "white",
   });
 });
+
+
 app.post("/add", async (req, res) => {
   const input = req.body["country"];
   const currentUser = await getCurrentUser();
