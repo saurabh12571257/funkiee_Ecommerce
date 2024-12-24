@@ -100,6 +100,12 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// Serve the login page when the user accesses the /login route
+app.get("/login", (req, res) => {
+  res.render("login.ejs", { error: "" });
+});
+
+
 // Login route with JWT authentication
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
