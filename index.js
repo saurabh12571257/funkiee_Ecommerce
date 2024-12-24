@@ -46,7 +46,7 @@ db.connect()
   
   //INSERT new country
   app.post("/add", async (req, res) => {
-    const input = req.form["country"];
+    const input = req.body["country"];
   
     try {
       const result = await db.query(
