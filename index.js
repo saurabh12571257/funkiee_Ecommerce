@@ -77,6 +77,10 @@ app.get("/", verifyToken, async (req, res) => {
   });
 });
 
+app.get("/register", (req, res) => {
+  res.render("register.ejs"); // This will render the register.ejs page
+});
+
 // Registration route
 app.post("/register", async (req, res) => {
   const { name, email, password, color } = req.body;
