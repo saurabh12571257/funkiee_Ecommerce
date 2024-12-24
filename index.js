@@ -72,7 +72,7 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
       [name, email, hashedPassword, color]
     );
-    res.render("login.ejs");
+    res.render("login.ejs", { error: "" });
   } catch (err) {
     console.error("Registration error:", err);
     res.status(500).send("Server error.");
