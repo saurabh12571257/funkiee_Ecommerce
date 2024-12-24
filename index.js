@@ -1,19 +1,20 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 const app = express();
 const port = 3000;
 
 const db = new pg.Client({
-  user: "postgres1",               
-  host: process.env.DB_HOST,           
-  database: process.env.DB_NAME,           
+  user: "postgres1",
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
   password: process.env.DB_PASS,
-  port: 5432,             
+  port: 5432,
   ssl: {
     rejectUnauthorized: false,
   },
@@ -24,8 +25,17 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let currentUserId = null;
+// JWT Secret Key (keep it safe)
+const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
+// Utility function to generate JWT token
+function generateToken(user) {
+  return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+    expiresIn: "1h", // token expires in 1 hour
+  });
+}
+
+let currentUserId = null;
 
 async function checkVisited() {
   if (!currentUserId) return [];
@@ -36,8 +46,7 @@ async function checkVisited() {
   return result.rows.map((row) => row.country_code);
 }
 
-
-
+// Login route with JWT authentication
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -56,6 +65,12 @@ app.post("/login", async (req, res) => {
       return res.render("login.ejs", { error: "Invalid email or password." });
     }
 
+    // Generate JWT token and send it as a response
+    const token = generateToken(user);
+
+    // Send token as a response (or set it in a cookie if preferred)
+    res.cookie("authToken", token, { httpOnly: true });
+
     currentUserId = user.id;
     res.redirect("/");
   } catch (err) {
@@ -64,6 +79,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Registration route with JWT token generation
 app.post("/register", async (req, res) => {
   const { name, email, password, color } = req.body;
   try {
@@ -72,6 +88,15 @@ app.post("/register", async (req, res) => {
       "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
       [name, email, hashedPassword, color]
     );
+
+    // Fetch the user to generate the token after successful registration
+    const userResult = await db.query("SELECT * FROM users WHERE email = $1;", [email]);
+    const user = userResult.rows[0];
+    const token = generateToken(user);
+
+    // Send token as a response (or set it in a cookie if preferred)
+    res.cookie("authToken", token, { httpOnly: true });
+
     res.render("login.ejs", { error: "" });
   } catch (err) {
     console.error("Registration error:", err);
@@ -79,18 +104,26 @@ app.post("/register", async (req, res) => {
   }
 });
 
-async function getCurrentUser() {
-  if (!currentUserId) return null;
-  const result = await db.query("SELECT * FROM users WHERE id = $1;", [
-    currentUserId,
-  ]);
-  return result.rows[0];
-}
-
-app.get("/", async (req, res) => {
-  if (!currentUserId) {
+// Middleware to verify JWT token
+function verifyToken(req, res, next) {
+  const token = req.cookies.authToken || req.headers["authorization"];
+  if (!token) {
     return res.redirect("/login");
   }
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.redirect("/login");
+    }
+
+    req.user = decoded;
+    currentUserId = decoded.id;  // Set the current user ID from the token
+    next();
+  });
+}
+
+// Home page route (requires JWT authentication)
+app.get("/", verifyToken, async (req, res) => {
   const countries = await checkVisited();
   const currentUser = await getCurrentUser();
   res.render("index.ejs", {
@@ -101,59 +134,14 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/register", async(req,res) => {
-  res.render("register.ejs");
-});
-
-app.post("/add", async (req, res) => {
-  const input = req.body["country"];
-  const currentUser = await getCurrentUser();
-
-  try {
-    const result = await db.query(
-      "SELECT country_code FROM countries WHERE to_tsvector(country_name) @@ to_tsquery($1);",
-      [input.toLowerCase()]
-    );
-
-    const data = result.rows[0];
-    const countryCode = data.country_code;
-    try {
-      await db.query(
-        "INSERT INTO visited_countries (country_code, user_id) VALUES ($1, $2)",
-        [countryCode, currentUserId]
-      );
-      res.redirect("/");
-    } catch (err) {
-      console.log(err);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.post("/user", async (req, res) => {
-  if (req.body.add === "new") {
-    res.render("new.ejs");
-  } else {
-    currentUserId = req.body.user;
-    res.redirect("/");
-  }
-});
-
-app.post("/new", async (req, res) => {
-  const name = req.body.name;
-  const color = req.body.color;
-
-  const result = await db.query(
-    "INSERT INTO users (name, color) VALUES($1, $2) RETURNING *;",
-    [name, color]
-  );
-
-  const id = result.rows[0].id;
-  currentUserId = id;
-
-  res.redirect("/");
-});
+// Get current user data based on JWT (if any)
+async function getCurrentUser() {
+  if (!currentUserId) return null;
+  const result = await db.query("SELECT * FROM users WHERE id = $1;", [
+    currentUserId,
+  ]);
+  return result.rows[0];
+}
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
