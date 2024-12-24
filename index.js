@@ -4,6 +4,7 @@ import pg from "pg";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
@@ -24,14 +25,14 @@ db.connect();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cookieParser()); // Use cookie-parser middleware
 
-// JWT Secret Key (keep it safe)
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
-// Utility function to generate JWT token
+// Function to generate JWT token
 function generateToken(user) {
   return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: "1h", // token expires in 1 hour
+    expiresIn: "1h", // Token expires in 1 hour
   });
 }
 
@@ -45,64 +46,6 @@ async function checkVisited() {
   );
   return result.rows.map((row) => row.country_code);
 }
-
-// Login route with JWT authentication
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const result = await db.query("SELECT * FROM users WHERE email = $1;", [
-      email,
-    ]);
-
-    if (result.rows.length === 0) {
-      return res.render("login.ejs", { error: "Invalid email or password." });
-    }
-
-    const user = result.rows[0];
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.render("login.ejs", { error: "Invalid email or password." });
-    }
-
-    // Generate JWT token and send it as a response
-    const token = generateToken(user);
-
-    // Send token as a response (or set it in a cookie if preferred)
-    res.cookie("authToken", token, { httpOnly: true });
-
-    currentUserId = user.id;
-    res.redirect("/");
-  } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).send("Server error.");
-  }
-});
-
-// Registration route with JWT token generation
-app.post("/register", async (req, res) => {
-  const { name, email, password, color } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.query(
-      "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
-      [name, email, hashedPassword, color]
-    );
-
-    // Fetch the user to generate the token after successful registration
-    const userResult = await db.query("SELECT * FROM users WHERE email = $1;", [email]);
-    const user = userResult.rows[0];
-    const token = generateToken(user);
-
-    // Send token as a response (or set it in a cookie if preferred)
-    res.cookie("authToken", token, { httpOnly: true });
-
-    res.render("login.ejs", { error: "" });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).send("Server error.");
-  }
-});
 
 // Middleware to verify JWT token
 function verifyToken(req, res, next) {
@@ -134,7 +77,72 @@ app.get("/", verifyToken, async (req, res) => {
   });
 });
 
-// Get current user data based on JWT (if any)
+// Registration route
+app.post("/register", async (req, res) => {
+  const { name, email, password, color } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await db.query(
+      "INSERT INTO users (name, email, password, color) VALUES ($1, $2, $3, $4);",
+      [name, email, hashedPassword, color]
+    );
+
+    const userResult = await db.query("SELECT * FROM users WHERE email = $1;", [email]);
+    const user = userResult.rows[0];
+    const token = generateToken(user);
+
+    res.cookie("authToken", token, { httpOnly: true });
+
+    res.render("login.ejs", { error: "" });
+  } catch (err) {
+    console.error("Registration error:", err);
+    res.status(500).send("Server error.");
+  }
+});
+
+// Login route with JWT authentication
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await db.query("SELECT * FROM users WHERE email = $1;", [
+      email,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.render("login.ejs", { error: "Invalid email or password." });
+    }
+
+    const user = result.rows[0];
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.render("login.ejs", { error: "Invalid email or password." });
+    }
+
+    const token = generateToken(user);
+
+    res.cookie("authToken", token, { httpOnly: true });
+
+    currentUserId = user.id;
+    res.redirect("/");
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).send("Server error.");
+  }
+});
+
+// Logout route (clear JWT token)
+app.get("/logout", (req, res) => {
+  res.clearCookie("authToken"); // Clear the JWT token cookie
+  res.redirect("/login");
+});
+
+// Access page to verify token and access the protected content
+app.get("/access", verifyToken, (req, res) => {
+  res.send("You are authenticated and can access this page!");
+});
+
+// Function to get the current user
 async function getCurrentUser() {
   if (!currentUserId) return null;
   const result = await db.query("SELECT * FROM users WHERE id = $1;", [
