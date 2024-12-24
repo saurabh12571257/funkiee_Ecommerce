@@ -100,6 +100,9 @@ app.get("/", async (req, res) => {
   });
 });
 
+app.get("/register", async(req,res) => {
+  res.render("register.ejs");
+});
 
 app.post("/add", async (req, res) => {
   const input = req.body["country"];
