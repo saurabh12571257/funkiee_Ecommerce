@@ -162,7 +162,7 @@ async function getCurrentUser() {
 }
 
 
-pp.get("/", async (req, res) => {
+app.get("/", async (req, res) => {
   const countries = await checkVisisted();
   const currentUser = await getCurrentUser();
   res.render("index.ejs", {
@@ -172,6 +172,7 @@ pp.get("/", async (req, res) => {
     color: currentUser.color,
   });
 });
+
 app.post("/add", async (req, res) => {
   const input = req.body["country"];
   const currentUser = await getCurrentUser();
