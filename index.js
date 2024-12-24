@@ -161,11 +161,6 @@ async function getCurrentUser() {
   return result.rows[0];
 }
 
-async function getCurrentUser() {
-  const result = await db.query("SELECT * FROM users");
-  users = result.rows;
-  return users.find((user) => user.id == currentUserId);
-}
 
 pp.get("/", async (req, res) => {
   const countries = await checkVisisted();
