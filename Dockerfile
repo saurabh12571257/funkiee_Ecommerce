@@ -6,7 +6,7 @@ RUN npm ci --only=production
 COPY . .
 
 # Production stage
-FROM gcr.io/distroless/nodejs:20
+FROM gcr.io/distroless/nodejs20
 WORKDIR /app
 COPY --from=builder /app ./
 
