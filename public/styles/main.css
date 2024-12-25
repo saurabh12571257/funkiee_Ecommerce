@@ -32,7 +32,7 @@ body {
 }
 .ag-canvas_svg {
   margin-top: 7rem;
-  width: 88vw;
+  width: 100vw;
   height: 80.9vh;
   min-height: auto;
   object-fit: cover;
