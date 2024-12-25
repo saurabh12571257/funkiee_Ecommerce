@@ -16,14 +16,10 @@
         <%= user.name %>
       </label>
     <% }); %>
-
-    <input type="submit" name="add" value="new" id="tab">
-    <label for="tab">Add Family Member</label>
   </form>
 
-  <form action="/add" method="post">
-    <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
-    <button type="submit" style="background-color: <%= color %>;">Add</button>
+  <form action="/add" method="post" id="countryForm">
+    <input type="hidden" name="country" id="countryInput">
   </form>
 
   <section class="ag-canvas">
@@ -389,17 +385,19 @@
   <h2 class="total-count">Total Countries: <%=total%></h2>
   
   <script>
-     const country_codes = "<%= countries %>".split(",");
-     const tooltip = document.getElementById('tooltip');
-      
-      // Color visited countries
-     country_codes.forEach(code => {
+    const country_codes = "<%= countries %>".split(",");
+    const tooltip = document.getElementById('tooltip');
+    const countryInput = document.getElementById('countryInput');
+    
+    // Color visited countries
+    country_codes.forEach(code => {
       const element = document.getElementById(code);
       if (element) {
-          element.style.fill = "<%= color %>";
-        }
-      });
-      document.querySelectorAll('.ag-canvas_svg path').forEach(path => {
+        element.style.fill = "<%= color %>";
+      }
+    });
+
+    document.querySelectorAll('.ag-canvas_svg path').forEach(path => {
       // Mouse events
       path.addEventListener('mouseover', (e) => {
         const countryName = e.target.getAttribute('title');
@@ -418,6 +416,13 @@
         tooltip.style.opacity = '0';
       });
 
+      // Click event for country selection
+      path.addEventListener('click', (e) => {
+        const countryName = e.target.getAttribute('title');
+        countryInput.value = countryName;
+        document.getElementById('countryForm').submit();
+      });
+
       // Touch events
       path.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -429,10 +434,12 @@
         tooltip.style.left = touch.pageX + 10 + 'px';
         tooltip.style.top = touch.pageY - 20 + 'px';
         
-        // Hide tooltip after 2 seconds on touch devices
+        // Set country and submit form
+        countryInput.value = countryName;
         setTimeout(() => {
           tooltip.style.opacity = '0';
-        }, 2000);
+          document.getElementById('countryForm').submit();
+        }, 1000);
       });
     });
   </script>
