@@ -479,9 +479,15 @@ button {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background: rgba(238, 242, 240, 0.8);
-  backdrop-filter: none;
+  background: rgba(31, 41, 55, 0.8);
+  backdrop-filter: blur(10px);
   z-index: 1000;
+}
+
+.header nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .logo {
@@ -513,4 +519,46 @@ button {
 .tab-view {
   display: flex;
   gap: 10px;
+}
+
+.nav-link {
+  position: relative;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  color: rgb(107, 114, 128);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.nav-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, rgb(255, 0, 0), rgb(255, 115, 0), rgb(255, 251, 0), rgb(72, 255, 0), rgb(0, 255, 213), rgb(0, 43, 255), rgb(122, 0, 255), rgb(255, 0, 200));
+  background-size: 400% 400%;
+  filter: blur(8px);
+  opacity: 0.5;
+  z-index: -1;
+  border-radius: 0.5rem;
+  will-change: opacity;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.nav-link:hover::before {
+  opacity: 0.8;
+}
+
+.nav-link-container {
+  position: relative;
+  display: inline-block;
+  padding: 6px;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
 }

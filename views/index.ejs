@@ -10,20 +10,31 @@
 </head>
 
 <body>
-  <div class="header"></div>
-    <form class="tab-view tab-view-height-auto" action="/user" method="post">
-      <% users.forEach(function(user) { %>
-        <input type="submit" name="user" value="<%= user.id %>" id="<%= user.id %>">
-        <label for="<%= user.id %>" style="background-color: <%= user.color %>;">
-          <%= user.name %>
-        </label>
-      <% }); %>
-    </form>
-    <a href="/logout" class="logout-btn">Logout</a>
-  </div>
+  <header class="header">
+    <a href="/" class="logo">LiveToTravel</a>
+    <nav style="display: flex; gap: 1rem;">
+      <div class="nav-link-container">
+        <a href="/projects" class="nav-link">Projects</a>
+      </div>
+      <div class="nav-link-container">
+        <a href="#" class="nav-link">Links</a>
+      </div>
+      <div class="nav-link-container">
+        <a href="#" class="nav-link">Blog</a>
+      </div>
+      <div class="nav-link-container">
+        <a href="/logout" class="nav-link">Logout</a>
+      </div>
+    </nav>
+  </header>
 
-  <form action="/add" method="post" id="countryForm">
-    <input type="hidden" name="country" id="countryInput">
+  <form class="tab-view" action="/user" method="post">
+    <% users.forEach(function(user) { %>
+      <input type="submit" name="user" value="<%= user.id %>" id="<%= user.id %>">
+      <label for="<%= user.id %>" style="background-color: <%= user.color %>;">
+        <%= user.name %>
+      </label>
+    <% }); %>
   </form>
 
   <section class="ag-canvas">
@@ -406,9 +417,9 @@
       path.addEventListener('mouseover', (e) => {
         const countryName = e.target.getAttribute('title');
         tooltip.textContent = countryName;
-        tooltip.style.opacity = '0.3';
-        tooltip.style.left = e.pageX + 1 + 'px';
-        tooltip.style.top = e.pageY + 1 + 'px';
+        tooltip.style.opacity = '0.4';
+        tooltip.style.left = e.pageX + 2 + 'px';
+        tooltip.style.top = e.pageY + 2 + 'px';
       });
 
       path.addEventListener('mousemove', (e) => {
@@ -435,8 +446,8 @@
         
         tooltip.textContent = countryName;
         tooltip.style.opacity = '1';
-        tooltip.style.left = touch.pageX + 4 + 'px';
-        tooltip.style.top = touch.pageY - 9 + 'px';
+        tooltip.style.left = touch.pageX + 5 + 'px';
+        tooltip.style.top = touch.pageY - 10 + 'px';
         
         // Set country and submit form
         countryInput.value = countryName;
