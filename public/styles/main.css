@@ -11,7 +11,8 @@ html {
 html,
 body {
   height: 100%;
-  padding-top: 5rem;
+  padding-top: 7rem;
+  position: relative;
 }
 body {
   background: #21252b;
@@ -561,6 +562,9 @@ button {
   display: inline-block;
   padding: 6px;
   border-radius: 2.0rem;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
   background: rgb(0, 0, 0);
   backdrop-filter: blur(8px);
 }
@@ -569,4 +573,6 @@ button {
   max-width: 100%;
   height: auto;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
