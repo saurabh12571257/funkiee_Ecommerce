@@ -200,7 +200,9 @@ button {
   left: 0;
   opacity: 1;
   -webkit-transform: scale(1, 1);
+  transform: scale(1, 1);
   -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
 }
 .tab-view-height-auto > ul {
   height: auto !important;
@@ -419,9 +421,11 @@ button {
 }
 .tab-view-effect-scale > ul > li {
   -webkit-transform: scale(0.1, 0.1);
+  transform: scale(0.1, 0.1);
 }
 .tab-view-effect-rotate > ul > li {
   -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 .tab-view-effect-slide-top > ul > li {
   top: -40px;
@@ -474,25 +478,35 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
+  padding: 1.5rem 2rem;
+  background: rgba(238, 242, 240, 0.8);
+  backdrop-filter: none;
   z-index: 1000;
 }
 
-.logout-btn {
-  background: #e74c3c;
+.logo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2rem;
   color: white;
-  padding: 8px 20px;
-  border-radius: 4px;
+  text-decoration: none;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.resume-btn {
+  background: #000;
+  color: white;
+  padding: 8px 24px;
+  border-radius: 100px;
   text-decoration: none;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.logout-btn:hover {
-  background: #c0392b;
+.resume-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }
 
