@@ -467,23 +467,36 @@ button {
 }
 
 .header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  position: relative;
-  z-index: 2;
+  padding: 1rem 2rem;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
 }
 
 .logout-btn {
   background: #e74c3c;
   color: white;
-  padding: 10px 20px;
-  text-decoration: none;
+  padding: 8px 20px;
   border-radius: 4px;
-  transition: background 0.3s;
+  text-decoration: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
   background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.tab-view {
+  display: flex;
+  gap: 10px;
 }
