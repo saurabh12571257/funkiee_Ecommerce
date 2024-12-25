@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Grand+Hotel&display=swap');
+
 html {
   box-sizing: border-box;
 }
@@ -9,6 +11,7 @@ html {
 html,
 body {
   height: 100%;
+  padding-top: 5rem;
 }
 body {
   background: #21252b;
@@ -491,12 +494,11 @@ button {
 }
 
 .logo {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Grand Hotel', cursive;
   font-size: 2rem;
   color: white;
   text-decoration: none;
-  font-style: italic;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .resume-btn {
@@ -558,7 +560,13 @@ button {
   position: relative;
   display: inline-block;
   padding: 6px;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2.0rem;
+  background: rgb(0, 0, 0);
   backdrop-filter: blur(8px);
+}
+
+.map-container {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
 }

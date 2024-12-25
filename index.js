@@ -144,7 +144,7 @@ app.post("/login", async (req, res) => {
 // Logout route (clear JWT token)
 app.get("/logout", (req, res) => {
   currentUserId = null;
-  res.redirect("/login.ejs");
+  res.render("/login.ejs");
 });
 
 // Access page to verify token and access the protected content
