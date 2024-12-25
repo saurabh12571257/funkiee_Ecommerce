@@ -1,14 +1,17 @@
-FROM node:18-slim AS builder
-
+# Build stage
+FROM node:20-alpine AS builder
 WORKDIR /app
-
 COPY package*.json ./
-
-# Install dependencies (this will be cached unless package.json changes)
-RUN npm install --production
-
+RUN npm ci --only=production
 COPY . .
 
+# Production stage
+FROM gcr.io/distroless/nodejs:20
+WORKDIR /app
+COPY --from=builder /app ./
+
+# Expose port
 EXPOSE 3000
 
-CMD ["node", "index.js"]
+# Command to run the application
+CMD ["index.js"]
