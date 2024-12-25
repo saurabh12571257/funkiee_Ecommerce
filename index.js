@@ -143,8 +143,8 @@ app.post("/login", async (req, res) => {
 
 // Logout route (clear JWT token)
 app.get("/logout", (req, res) => {
-  res.clearCookie("authToken"); // Clear the JWT token cookie
-  res.redirect("/login");
+  currentUserId = null;
+  res.redirect("/");
 });
 
 // Access page to verify token and access the protected content

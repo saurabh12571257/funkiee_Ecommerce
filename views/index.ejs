@@ -6,17 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Travel Tracker</title>
   <link rel="stylesheet" href="./styles/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <form class="tab-view tab-view-height-auto" action="/user" method="post">
-    <% users.forEach(function(user) { %>
-      <input type="submit" name="user" value="<%= user.id %>" id="<%= user.id %>">
-      <label for="<%= user.id %>" style="background-color: <%= user.color %>;">
-        <%= user.name %>
-      </label>
-    <% }); %>
-  </form>
+  <div class="header"></div>
+    <form class="tab-view tab-view-height-auto" action="/user" method="post">
+      <% users.forEach(function(user) { %>
+        <input type="submit" name="user" value="<%= user.id %>" id="<%= user.id %>">
+        <label for="<%= user.id %>" style="background-color: <%= user.color %>;">
+          <%= user.name %>
+        </label>
+      <% }); %>
+    </form>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </div>
 
   <form action="/add" method="post" id="countryForm">
     <input type="hidden" name="country" id="countryInput">
