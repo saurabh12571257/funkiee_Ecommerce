@@ -35,4 +35,9 @@ variable "jwt_secret" {
 
 variable "docker_image" {
   description = "Docker image to deploy"
+}
+
+variable "rds_security_group_ids" {
+  description = "List of security group IDs of the existing RDS instance"
+  type        = list(string)
 } 
