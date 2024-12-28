@@ -1,0 +1,17 @@
+<header class="header">
+    <nav class="nav-container">
+        <a href="/" class="logo">E-Store</a>
+        <div class="nav-links">
+            <a href="/products">Products</a>
+            <a href="/categories">Categories</a>
+            <% if (locals.user) { %>
+                <a href="/cart">Cart</a>
+                <a href="/orders">My Orders</a>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            <% } %>
+        </div>
+    </nav>
+</header> 
