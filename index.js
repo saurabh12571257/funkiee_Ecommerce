@@ -27,6 +27,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+// JWT Middleware
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
+  
+  if (!token) {
+    return res.status(401).redirect('/login');
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).redirect('/login');
+  }
+};
+
 // Routes
 app.get("/", async (req, res) => {
   try {
