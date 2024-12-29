@@ -48,10 +48,9 @@ const verifyToken = (req, res, next) => {
 app.get("/", async (req, res) => {
   try {
     const products = await db.query("SELECT * FROM products LIMIT 8");
-    const categories = await db.query("SELECT * FROM categories");
     res.render("index.ejs", { 
       products: products.rows,
-      categories: categories.rows,
+      categories: [],
       user: req.user || null
     });
   } catch (error) {
